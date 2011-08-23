@@ -1,0 +1,4 @@
+23-08-2011
+- One user can only vote a band once. Check this.
+- A user 'integrante' can't vote his own band. Check this.
+- Provide templating functions.
