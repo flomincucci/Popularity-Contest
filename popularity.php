@@ -47,36 +47,61 @@ register_activation_hook(__FILE__,'instalacionpoptest');
 function getvotes($user) {
 	// Retrieves the votes for a user (voted)
 	global $wpdb;
-	$votos = $wpdb->get_var( "SELECT count(1) FROM ".$wpdb->prefix . "poptest_votos where usuario = ".$user." group by usuario");
-	return $votos;
+	if(user_can($voter, 'banda')) {
+		$votos = $wpdb->get_var( "SELECT count(1) FROM ".$wpdb->prefix . "poptest_votos where usuario = ".$user." group by usuario");
+		return $votos;
+	} else {
+		//Error
+	}
 }
 
 function getvotesavailable($user) {
 	// Retrieves the votes available for a user (voter)
 	global $wpdb;
-	$votos = $wpdb->get_var( "SELECT cantvotos FROM ".$wpdb->prefix . "poptest_votosdisponibles where usuario = ".$user);
-	return $votos;
+	if(user_can($voter, 'integrante')) {
+		$votos = $wpdb->get_var( "SELECT cantvotos FROM ".$wpdb->prefix . "poptest_votosdisponibles where usuario = ".$user);
+		return $votos;
+	}
+}
+
+function getvotados($user) {
+	// Retrieves the bands voted by a user
+	global $wpdb;
+	if(user_can($voter, 'integrante')) {
+		$votos = $wpdb->get_var( "SELECT count(1) FROM ".$wpdb->prefix . "poptest_votos where votante = ".$user." group by votante");
+		return $votos;
+	}
 }
 
 function vote($voter, $uservoted) {
- // Action of voting. One logged in user votes a band. The user loses one credit, the band wins a vote. Must check the type of user (bands can't vote, only band can be voted)
+ // Action of voting. One logged-in user votes a band. The user loses one credit, the band wins a vote. Must check the type of user (bands can't vote, only band can be voted)
+	if(is_user_logged_in() && user_can($voter, 'integrante') && user_van($uservoted, 'banda') {
+		$wpdb->insert($wpdb->prefix . "poptest_votos", array('usuario' => $uservoted, 'votante' => $voter));
+		losecredit($voter,1);
+	} else {
+		//Error
+	}
 }
 
 function losecredit(int $user, int $quantity) {
-	// The user loses $quantity vote credits. Returns the amount of credits available.
+	// The user loses $quantity vote credits. Returns the amount of credits available. User must be 'integrante'
 	global $wpdb;
-	if($wpdb->get_var("SELECT usuario FROM ".$wpdb->prefix . "poptest_votosdisponibles where usuario = ".$user == $user) {
-		// User already exists in the table
-		$votosactuales = getvotesavailable($user);
-		$itsok = $wpdb->update($wpdb->prefix . "poptest_votosdisponibles", array('cantvotos' => $votosactuales - $quantity), array('usuario' => $user));
-		if ($itsok)	$votosdisponibles = $votosactuales - $quantity;
-		else $votosdisponibles = $votosactuales;
+	if(user_can($voter, 'integrante')) {
+		if($wpdb->get_var("SELECT usuario FROM ".$wpdb->prefix . "poptest_votosdisponibles where usuario = ".$user == $user) {
+			// User already exists in the table
+			$votosactuales = getvotesavailable($user);
+			$itsok = $wpdb->update($wpdb->prefix . "poptest_votosdisponibles", array('cantvotos' => $votosactuales - $quantity), array('usuario' => $user));
+			if ($itsok)	$votosdisponibles = $votosactuales - $quantity;
+			else $votosdisponibles = $votosactuales;
+		} else {
+			// Insert user in the table
+			$votosdisponibles = 10 - $quantity;
+			$wpdb->insert($wpdb->prefix . "poptest_votosdisponibles", array('usuario' => $user, 'cantvotos' => $votosdisponible));
+		}
+		return $votosdisponibles;
 	} else {
-		// Insert user in the table
-		$wpdb->insert($wpdb->prefix . "poptest_votosdisponibles", array('usuario' => $user, 'cantvotos' => 10-$quantity ));
+		//Error
 	}
-	return $votosdisponibles;
-
 }
 
 ?>
