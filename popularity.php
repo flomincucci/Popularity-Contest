@@ -61,6 +61,8 @@ function getvotesavailable($user) {
 	if(user_can($voter, 'integrante')) {
 		$votos = $wpdb->get_var( "SELECT cantvotos FROM ".$wpdb->prefix . "poptest_votosdisponibles where usuario = ".$user);
 		return $votos;
+	} else {
+		return false;
 	}
 }
 
@@ -70,16 +72,24 @@ function getvotados($user) {
 	if(user_can($voter, 'integrante')) {
 		$votos = $wpdb->get_var( "SELECT count(1) FROM ".$wpdb->prefix . "poptest_votos where votante = ".$user." group by votante");
 		return $votos;
+	} else {
+		return false;
 	}
 }
 
 function vote($voter, $uservoted) {
- // Action of voting. One logged-in user votes a band. The user loses one credit, the band wins a vote. Must check the type of user (bands can't vote, only band can be voted)
+ // Action of voting. One logged-in user votes a band. The user loses one credit, the band wins a vote. Must check the type of user (bands can't vote, only band can be voted). Returns false if fails.
 	if(is_user_logged_in() && user_can($voter, 'integrante') && user_van($uservoted, 'banda') {
-		$wpdb->insert($wpdb->prefix . "poptest_votos", array('usuario' => $uservoted, 'votante' => $voter));
-		losecredit($voter,1);
+		if($wpdb->get_var("SELECT usuario FROM ".$wpdb->prefix . "poptest_votos where votante = ".$voter." and usuario = ".$uservoted) == $voter) {
+			return false;
+		} else {
+			$wpdb->insert($wpdb->prefix . "poptest_votos", array('usuario' => $uservoted, 'votante' => $voter));
+			losecredit($voter,1);
+			return true;
+		}
 	} else {
 		//Error
+		return false;
 	}
 }
 
@@ -101,6 +111,7 @@ function losecredit(int $user, int $quantity) {
 		return $votosdisponibles;
 	} else {
 		//Error
+		return false;
 	}
 }
 
