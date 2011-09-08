@@ -59,7 +59,7 @@ function getvotes($user) {
 function getvotesavailable($user) {
 	// Retrieves the votes available for a user (voter)
 	global $wpdb;
-	if(user_can($user, 'integrante')) {
+	if(user_can($user, 'banda') || user_can($user, 'juez') ) {
 		$votos = $wpdb->get_var( "SELECT cantvotos FROM ".$wpdb->prefix . "poptest_votosdisponibles where usuario = ".$user);
 		return $votos;
 	} else {
@@ -67,21 +67,22 @@ function getvotesavailable($user) {
 	}
 }
 
-function getvotados($user) {
+/*function getvotados($user) {
 	// Retrieves the bands voted by a user
 	global $wpdb;
-	if(user_can($user, 'integrante')) {
+	if(user_can($user, 'integrante') || user_can($user, 'juez')) {
 		$votos = $wpdb->get_var( "SELECT count(1) FROM ".$wpdb->prefix . "poptest_votos where votante = ".$user." group by votante");
 		return $votos;
 	} else {
 		return false;
 	}
-}
+}*/
 
 function vote($voter, $uservoted) {
  // Action of voting. One logged-in user votes a band. The user loses one credit, the band wins a vote. Must check the type of user (bands can't vote, only band can be voted). Returns false if fails.
-	if(is_user_logged_in() && (user_can($voter, 'integrante') || user_can($voter, 'juez') && user_can($uservoted, 'banda') {
-		if(($wpdb->get_var("SELECT usuario FROM ".$wpdb->prefix . "poptest_votos where votante = ".$voter." and usuario = ".$uservoted) == $voter) or ( getvotesavailable($voter) == 0  )) {
+	if(is_user_logged_in() && (user_can($voter, 'banda') || user_can($voter, 'juez')) && user_can($uservoted, 'banda') {
+		/*if(($wpdb->get_var("SELECT usuario FROM ".$wpdb->prefix . "poptest_votos where votante = ".$voter." and usuario = ".$uservoted) == $voter) or ( getvotesavailable($voter) == 0  ))*/
+		if  {
 			return false;
 		} else {
 			$wpdb->insert($wpdb->prefix . "poptest_votos", array('usuario' => $uservoted, 'votante' => $voter));
