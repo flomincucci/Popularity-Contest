@@ -90,7 +90,7 @@ function getvotesavailable($user) {
 
 function vote($voter, $uservoted) {
  // Action of voting. One logged-in user votes a band. The user loses one credit, the band wins a vote. Must check the type of user (bands can't vote, only band can be voted). Returns false if fails.
-	if(is_user_logged_in() && (user_can($voter, 'banda') || user_can($voter, 'juez')) && user_can($uservoted, 'banda') {
+	if(is_user_logged_in() && user_can($uservoted, 'banda') && (user_can($voter, 'banda') || user_can($voter, 'juez'))) {
 		if(($wpdb->get_var("SELECT usuario FROM ".$wpdb->prefix . "poptest_votos where votante = ".$voter." and usuario = ".$uservoted) == $voter) or ( getvotesavailable($voter) == 0  )) {
 			return false;
 		} else {
