@@ -95,7 +95,7 @@ function vote($voter, $uservoted) {
 			return false;
 		} else {
 			$wpdb->insert($wpdb->prefix . "poptest_votos", array('usuario' => $uservoted, 'votante' => $voter));
-			losecredit($voter,1);
+			/*losecredit($voter,1);*/
 			return true;
 		}
 	} else {
@@ -104,7 +104,7 @@ function vote($voter, $uservoted) {
 	}
 }
 
-function losecredit(int $user, int $quantity) {
+/*function losecredit(int $user, int $quantity) {
 	// The user loses $quantity vote credits. Returns the amount of credits available. User must be 'integrante'
 	global $wpdb;
 	if(user_can($voter, 'integrante') || user_can($voter,'juez')) {
@@ -127,6 +127,6 @@ function losecredit(int $user, int $quantity) {
 		//Error
 		return false;
 	}
-}
+}*/
 
 ?>
