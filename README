@@ -1,0 +1,5 @@
+A Wordpress plugin, where users can vote each other.
+
+In this version, they can only vote one person. I do not provide templating functions, just the functions to vote.
+
+In the model-functions.php you can find a model of the ajax call used to vote and retrieve the votes.
