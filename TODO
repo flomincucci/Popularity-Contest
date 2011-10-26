@@ -1,5 +1,2 @@
-23-08-2011
-- One user can only vote a band once. Check this.
-	FIXED 24-08-2011
-- Provide templating functions.
-
+- Implement a variable amount of votes
+- Implement voting capability only for certain roles
